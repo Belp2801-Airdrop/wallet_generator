@@ -6,7 +6,7 @@
   </picture>
 </p>
 
-## Development
+## Installation
 ### Prerequisites
 - Python 3 
 ### Setup
