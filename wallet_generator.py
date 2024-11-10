@@ -130,7 +130,7 @@ class WalletGenerator(customtkinter.CTk):
         button.grid(row=3, column=0, padx=10, pady=(10, 0), sticky="ew")
 
     def build_footers(self):
-        cer = customtkinter.CTkLabel(self, text="@Power by: Belp2801")
+        cer = customtkinter.CTkLabel(self, text="@Powered by: Belp2801")
         cer.grid(row=4, column=0, columnspan=3, padx=10, pady=4)
 
     # endregion
