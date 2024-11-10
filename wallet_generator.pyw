@@ -27,21 +27,21 @@ class WalletGenerator(customtkinter.CTk):
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure((0, 1), weight=1)
 
-        self.init_constant()
-        self.init_var()
-        self.init_ctk_var()
+        self.init_constants()
+        self.init_vars()
+        self.init_ctk_vars()
 
         self.build_widgets()
 
     # region init
-    def init_constant(self):
+    def init_constants(self):
         self.type_dict = {1: "One Seed Phrase", 2: "Multi Seed Phrases"}
         self.mnemo = Mnemonic("english")
 
-    def init_var(self):
+    def init_vars(self):
         self.wallets = []
 
-    def init_ctk_var(self):
+    def init_ctk_vars(self):
         self.type_var = customtkinter.StringVar()
         self.type_var.set(list(self.type_dict.keys())[0])
         self.combobox_text_var = customtkinter.StringVar()
