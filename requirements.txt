@@ -1,5 +1,7 @@
+base58==2.1.1
 bip32utils==0.3.post4
 CTkMessagebox==2.7
 customtkinter==5.2.2
 eth_account==0.13.4
 mnemonic==0.21
+solders==0.26.0

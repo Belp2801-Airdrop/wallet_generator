@@ -198,8 +198,22 @@ class WalletGenerator(customtkinter.CTk):
                 }
             )
     
-    def gerenate_svm_wallets(self, seed_phrase, num = 1):
-        return
+    def generate_svm_wallets(self, seed_phrase, num = 1):
+        for i in range(num):
+            seed = self.mnemo.to_seed(seed_phrase)
+
+            path = f"m/44'/501'/{i}'/0'"
+            keypair = Keypair.from_seed_and_derivation_path(seed, path)
+            public_key = keypair.pubkey()
+            private_key = base58.b58encode(keypair.secret() + base58.b58decode(str(keypair.pubkey()))).decode('utf-8')
+
+            self.wallets.append(
+                {
+                    "seed_phrase": seed_phrase,
+                    "address": public_key,
+                    "private_key": private_key,
+                }
+            )
             
     def run_evm(self):
         if self.type_var.get() == "1":
