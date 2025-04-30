@@ -54,6 +54,8 @@ class WalletGenerator(customtkinter.CTk):
         self.combobox_text_var = customtkinter.StringVar()
         self.num_of_words_var = customtkinter.IntVar(value=12)
         self.num_of_wallets_var = customtkinter.IntVar(value=100)
+        self.output_location = customtkinter.StringVar()
+        self.output_location.set(os.path.realpath(__file__))
 
     # endregion
 
@@ -67,7 +69,7 @@ class WalletGenerator(customtkinter.CTk):
         self.build_footers()
 
     def build_input_frame(self):
-        # VN
+        # VM
         vm_label = customtkinter.CTkLabel(self.input_frame, text="VM: ")
         def on_vm_combobox_select(event):
             for key, value in self.vm_dict.items():
@@ -91,6 +93,24 @@ class WalletGenerator(customtkinter.CTk):
             row=0, column=1, columnspan=2, sticky="w", padx=(10, 10), pady=10
         )
         
+        # Wallet
+        wallet_num_label = customtkinter.CTkLabel(
+            self.input_frame, text="Num of wallets: "
+        )
+        wallet_num_entry = customtkinter.CTkComboBox(
+            self.input_frame,
+            values=["10", "100", "1000", "10000"],
+            variable=self.num_of_wallets_var,
+            justify="right",
+            width=160,
+            border_width=0,
+        )
+
+        wallet_num_entry.set("100")
+
+        wallet_num_label.grid(row=1, column=0, sticky="w", padx=(10, 0), pady=10)
+        wallet_num_entry.grid(row=1, column=1, columnspan=2, sticky="w", padx=(10, 10), pady=10)
+
         # Type
         type_label = customtkinter.CTkLabel(self.input_frame, text="Type: ")
         def on_type_combobox_select(event):
@@ -110,13 +130,14 @@ class WalletGenerator(customtkinter.CTk):
             command=on_type_combobox_select,
         )
 
-        type_label.grid(row=1, column=0, sticky="w", padx=(10, 0), pady=10)
+        type_label.grid(row=0, column=3, sticky="w", padx=(20, 0), pady=10)
         type_entry.grid(
-            row=1, column=1, columnspan=2, sticky="w", padx=(10, 10), pady=10
+            row=0, column=4, columnspan=2, sticky="w", padx=(10, 10), pady=10
         )
 
         type_entry.set(list(self.type_dict.values())[0])
 
+        # Seed
         seed_num_label = customtkinter.CTkLabel(self.input_frame, text="Num of words: ")
         seed_num_entry = customtkinter.CTkOptionMenu(
             self.input_frame,
@@ -130,27 +151,33 @@ class WalletGenerator(customtkinter.CTk):
         )
         seed_num_entry.set("12")
 
-        seed_num_label.grid(row=2, column=0, sticky="w", padx=(10, 0), pady=10)
+        seed_num_label.grid(row=1, column=3, sticky="w", padx=(20, 0), pady=10)
         seed_num_entry.grid(
-            row=2, column=1, columnspan=2, sticky="w", padx=(10, 10), pady=10
+            row=1, column=4, columnspan=2, sticky="w", padx=(10, 10), pady=10
         )
 
-        wallet_num_label = customtkinter.CTkLabel(
-            self.input_frame, text="Num of wallets: "
+        # Ouput llocation
+        output_location_label = customtkinter.CTkLabel(
+            self.input_frame, text="Output location: "
         )
-        wallet_num_entry = customtkinter.CTkComboBox(
+        output_location_entry = customtkinter.CTkEntry(
             self.input_frame,
-            values=["10", "100", "1000", "10000"],
-            variable=self.num_of_wallets_var,
-            justify="right",
-            width=160,
+            textvariable=self.output_location,
+            justify="left",
+            width=350,
             border_width=0,
         )
 
-        wallet_num_entry.set("100")
+        output_location_button = customtkinter.CTkButton(
+            self.input_frame,
+            width=100,
+            text='Select',
+            command=self.select_folder
+        )
 
-        wallet_num_label.grid(row=3, column=0, sticky="w", padx=(10, 0), pady=10)
-        wallet_num_entry.grid(row=3, column=1, sticky="w", padx=(10, 10), pady=10)
+        output_location_label.grid(row=4, column=0, sticky="w", padx=(10, 0), pady=10)
+        output_location_entry.grid(row=4, column=1, columnspan=4, sticky="w", padx=(10, 0), pady=10)
+        output_location_button.grid(row=4, column=5, sticky="e", padx=(10, 10), pady=10)
 
     def build_button_widget(self):
         button = customtkinter.CTkButton(
@@ -158,11 +185,11 @@ class WalletGenerator(customtkinter.CTk):
             text="Generate",
             command=self.run,
         )
-        button.grid(row=3, column=0, padx=10, pady=(10, 0), sticky="ew")
+        button.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="ew")
 
     def build_footers(self):
         cer = customtkinter.CTkLabel(self, text="@Powered by: Belp2801")
-        cer.grid(row=4, column=0, columnspan=3, padx=10, pady=4)
+        cer.grid(row=2, column=0, padx=10, pady=4)
 
     # endregion
 
@@ -214,30 +241,17 @@ class WalletGenerator(customtkinter.CTk):
                     "private_key": private_key,
                 }
             )
-            
-    def run_evm(self):
-        if self.type_var.get() == "1":
-            seed_phrase = self.generate_seed_phrases()
-            self.generate_evm_wallets(seed_phrase, self.num_of_wallets_var.get())
-        elif self.type_var.get() == "2":
-            for i in range(self.num_of_wallets_var.get()):
-                seed_phrase = self.generate_seed_phrases()
-                self.generate_evm_wallets(seed_phrase, 1)
-                
-    def run_svm(self):
-        if self.type_var.get() == "1":
-            seed_phrase = self.generate_seed_phrases()
-            self.generate_svm_wallets(seed_phrase, self.num_of_wallets_var.get())
-        elif self.type_var.get() == "2":
-            for i in range(self.num_of_wallets_var.get()):
-                seed_phrase = self.generate_seed_phrases()
-                self.generate_svm_wallets(seed_phrase, 1)
 
+    def select_folder(self):
+        filename = customtkinter.filedialog.askdirectory()
+        if filename != "":
+            self.output_location.set(filename)
+            
     def current_time(self):
         return datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
 
     def save(self):
-        filename = f"wallets_{self.current_time()}.csv"
+        filename = f"{self.output_location.get()}/wallets_{self.current_time()}.csv"
 
         for index, item in enumerate(self.wallets):
             item["index"] = index + 1
@@ -272,6 +286,24 @@ class WalletGenerator(customtkinter.CTk):
             return False
 
         return True
+    
+    def run_evm(self):
+        if self.type_var.get() == "1":
+            seed_phrase = self.generate_seed_phrases()
+            self.generate_evm_wallets(seed_phrase, self.num_of_wallets_var.get())
+        elif self.type_var.get() == "2":
+            for i in range(self.num_of_wallets_var.get()):
+                seed_phrase = self.generate_seed_phrases()
+                self.generate_evm_wallets(seed_phrase, 1)
+                
+    def run_svm(self):
+        if self.type_var.get() == "1":
+            seed_phrase = self.generate_seed_phrases()
+            self.generate_svm_wallets(seed_phrase, self.num_of_wallets_var.get())
+        elif self.type_var.get() == "2":
+            for i in range(self.num_of_wallets_var.get()):
+                seed_phrase = self.generate_seed_phrases()
+                self.generate_svm_wallets(seed_phrase, 1)
 
     def run(self):
         is_valid = self.validate_number()
