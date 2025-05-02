@@ -55,7 +55,7 @@ class WalletGenerator(customtkinter.CTk):
         self.num_of_words_var = customtkinter.IntVar(value=12)
         self.num_of_wallets_var = customtkinter.IntVar(value=100)
         self.output_location = customtkinter.StringVar()
-        self.output_location.set(os.path.realpath(__file__))
+        self.output_location.set(os.path.dirname(os.path.realpath(__file__)))
 
     # endregion
 
